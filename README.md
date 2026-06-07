@@ -1,8 +1,5 @@
-# Simulador de Rede — Versão Web
-
-Conversão do projeto Java Swing **"Simulador de Rede"** (AED II — ISUTC) numa
-aplicação **web**, mantendo as mesmas estruturas de dados implementadas
-manualmente (Grafo, ArvoreAVL, Trie, TabelaHash, Fila, Pilha, ListaDuplamenteLigada).
+# Simulador de Rede — Web
+**"Simulador de Rede"** (AED II — ISUTC) trabalho de Algoritmo e Estrtutura de dados que simula a topologia de redes. 
 
 A interface lembra uma versão simplificada do **Cisco Packet Tracer**: o
 utilizador desenha a topologia arrastando dispositivos, liga-os com pesos
