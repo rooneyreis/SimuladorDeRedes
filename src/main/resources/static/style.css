@@ -1,0 +1,305 @@
+/* ============================================================
+   Simulador de Rede - ISUTC
+   Estetica: aplicacao classica de secretaria (estilo Windows 9x)
+   ============================================================ */
+:root {
+  --face:    #c0c0c0;   /* cinza painel */
+  --face-2:  #d4d0c8;
+  --hi:      #ffffff;   /* luz do relevo */
+  --hi-soft: #dfdfdf;
+  --sh:      #808080;   /* sombra do relevo */
+  --sh-dark: #000000;
+  --title-a: #000080;   /* azul barra de titulo */
+  --title-b: #1084d0;
+  --ink:     #000000;
+  --ink-dim: #404040;
+  --desktop: #008080;   /* o classico fundo teal */
+  --canvas:  #ffffff;
+  --grid:    #e3e3e3;
+
+  --router: #1f3f9e;    /* azul */
+  --switch: #0a8a8a;    /* teal */
+  --pc:     #2f7d32;    /* verde */
+  --path:   #d00000;    /* destaque caminho (vermelho) */
+  --reach:  #c8a000;    /* destaque alcancaveis (ambar) */
+
+  --font: Tahoma, Verdana, "MS Sans Serif", Geneva, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+/* o atributo hidden tem de ganhar sempre, mesmo sobre display:flex */
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0; height: 100%;
+  background: var(--desktop);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 12px;
+}
+body {
+  padding: 10px;
+  min-height: 100vh;
+}
+
+/* ---------- Relevos 3D classicos ---------- */
+.raised {
+  border: 2px solid;
+  border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+  box-shadow: inset 1px 1px 0 var(--hi-soft), inset -1px -1px 0 var(--sh);
+}
+.sunken {
+  border: 2px solid;
+  border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+  box-shadow: inset 1px 1px 0 var(--sh-dark), inset -1px -1px 0 var(--hi-soft);
+}
+
+/* ---------- Janela ---------- */
+.window {
+  background: var(--face);
+  border: 2px solid;
+  border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+  box-shadow: inset 1px 1px 0 var(--hi-soft), inset -1px -1px 0 var(--sh);
+  padding: 3px;
+}
+.app-window {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Barra de titulo ---------- */
+.titlebar {
+  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(90deg, var(--title-a), var(--title-b));
+  color: #fff; font-weight: bold;
+  padding: 4px 6px;
+  letter-spacing: .02em;
+}
+.titlebar-icon { font-size: 13px; }
+.titlebar-text { flex: 0 0 auto; }
+.titlebar-status {
+  margin-left: auto;
+  background: rgba(255,255,255,.18);
+  padding: 1px 8px;
+  font-weight: normal;
+  font-size: 11px;
+}
+.titlebar-close {
+  margin-left: auto;
+  width: 20px; height: 18px;
+  background: var(--face); color: #000;
+  border: 2px solid; border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+  font-weight: bold; font-size: 13px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.titlebar-close:active { border-color: var(--sh) var(--hi) var(--hi) var(--sh); }
+
+/* ---------- Barra de menu/botoes ---------- */
+.menubar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  padding: 5px 4px;
+  margin-top: 3px;
+}
+.tool-group { display: flex; align-items: center; gap: 5px; }
+.tool-label { color: var(--ink-dim); }
+.sep { width: 2px; height: 22px; background: var(--sh); box-shadow: 1px 0 0 var(--hi); margin: 0 3px; }
+
+/* ---------- Botoes ---------- */
+.btn {
+  font-family: var(--font); font-size: 12px;
+  background: var(--face); color: #000;
+  border: 2px solid; border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+  box-shadow: inset 1px 1px 0 var(--hi-soft), inset -1px -1px 0 var(--sh);
+  padding: 4px 10px; cursor: pointer; min-width: 56px;
+}
+.btn:active, .btn.active {
+  border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+  box-shadow: inset 1px 1px 0 var(--sh-dark), inset -1px -1px 0 var(--hi-soft);
+  padding: 5px 9px 3px 11px;
+}
+.btn:focus { outline: 1px dotted #000; outline-offset: -4px; }
+.btn.algo { width: 100%; text-align: left; }
+
+/* ---------- Area de trabalho ---------- */
+.workspace {
+  display: flex; gap: 6px; padding: 3px; margin-top: 2px;
+  min-height: 0;
+}
+
+/* ---------- Canvas ---------- */
+.canvas-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  background: var(--face);
+  border: 2px solid; border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+  min-width: 0;
+}
+.canvas-titlebar {
+  background: var(--face-2); padding: 3px 6px;
+  border-bottom: 1px solid var(--sh);
+  font-weight: bold; color: var(--ink-dim);
+}
+.canvas-inner {
+  position: relative;
+  flex: 1;
+  background:
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 22px 22px,
+    var(--canvas);
+  border: 2px solid; border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+  margin: 4px; overflow: hidden;
+  min-height: 520px;
+}
+#canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.canvas-wrap.connect #canvas { cursor: crosshair; }
+
+.canvas-hint {
+  position: absolute; inset: 0; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; color: var(--sh); pointer-events: none;
+}
+.canvas-hint p { margin: 3px 0; }
+.muted { color: var(--ink-dim); }
+
+.statusbar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 4px 8px; margin: 0 4px 4px;
+  background: var(--face);
+  border: 2px solid; border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+  font-size: 11px;
+}
+.legend i { display: inline-block; width: 11px; height: 11px; border: 1px solid #000; vertical-align: -1px; margin-right: 4px; }
+.sw-router { background: var(--router); }
+.sw-switch { background: var(--switch); }
+.sw-pc { background: var(--pc); }
+.legend-mode { margin-left: auto; color: var(--title-a); font-weight: bold; }
+
+/* ---------- Painel lateral ---------- */
+.panel {
+  width: 300px; flex: 0 0 300px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+/* group box estilo classico (fieldset com legenda) */
+.group-box {
+  position: relative;
+  border: 2px solid; border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+  background: var(--face);
+  padding: 0;
+}
+.group-title {
+  background: var(--face-2);
+  border-bottom: 1px solid var(--sh);
+  padding: 3px 7px; font-weight: bold; color: var(--ink-dim);
+}
+.group-body { padding: 10px; }
+
+.config-row { display: flex; justify-content: space-between; padding: 2px 0; border-bottom: 1px dotted var(--sh); }
+.config-row span { color: var(--ink-dim); }
+
+.field { display: flex; flex-direction: column; gap: 3px; margin-top: 9px; }
+.field > span { font-size: 11px; color: var(--ink-dim); }
+.field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+input[type="text"], input[type="number"], select {
+  font-family: var(--font); font-size: 12px;
+  background: #fff; color: #000;
+  border: 2px solid; border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+  padding: 4px 5px;
+}
+input:focus, select:focus { outline: 1px dotted #000; outline-offset: -3px; }
+
+.config-actions { display: flex; gap: 6px; margin-top: 12px; }
+.config-actions .btn { flex: 1; }
+
+/* lista de ligacoes do dispositivo selecionado */
+.config-links { margin-top: 12px; }
+.links-title { font-size: 11px; color: var(--ink-dim); display: block; margin-bottom: 5px; }
+#cfgLigacoes {
+  background: #fff;
+  border: 2px solid; border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+  padding: 4px; max-height: 130px; overflow-y: auto;
+}
+.link-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 6px; padding: 2px 2px;
+}
+.link-row + .link-row { border-top: 1px dotted var(--sh); }
+.link-row span { font-family: "Courier New", monospace; font-size: 11px; }
+.link-x { min-width: 0; padding: 1px 8px; font-weight: bold; line-height: 1; }
+.link-row .muted, #cfgLigacoes > .muted { font-family: var(--font); margin: 4px; }
+.algo-buttons { display: flex; flex-direction: column; gap: 5px; margin: 10px 0; }
+
+/* ---------- Resultado ---------- */
+.resultado {
+  background: #fff;
+  border: 2px solid; border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+  padding: 8px; min-height: 70px; font-size: 12px;
+  word-break: break-word;
+}
+.resultado.fail { background: #fff4f4; }
+.res-title { margin: 0 0 6px; font-weight: bold; }
+.resultado.fail .res-title { color: #b00000; }
+.path { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; margin: 6px 0; }
+.hop {
+  background: var(--face); border: 1px solid var(--sh);
+  padding: 1px 6px; font-family: "Courier New", monospace; font-size: 11px;
+}
+.arrow { color: var(--ink-dim); }
+.metric { margin: 6px 0 0; }
+.comp-list { margin: 6px 0 0; padding-left: 18px; }
+.comp-list li { margin: 3px 0; }
+
+/* ---------- SVG: dispositivos e arestas ---------- */
+.edge { stroke: #6a6a6a; stroke-width: 2; }
+.edge.path { stroke: var(--path); stroke-width: 4; }
+.edge-hit { stroke: transparent; stroke-width: 14; cursor: pointer; }
+.edge-label-bg { fill: #ffffe0; stroke: #999; stroke-width: 1; }
+.edge-label { font-family: "Courier New", monospace; font-size: 11px; fill: #000; }
+
+.node { cursor: move; }
+.node .node-body { stroke: #000; stroke-width: 1.5; fill: currentColor; }
+.node .node-glyph { stroke: #fff; stroke-width: 2; fill: none; }
+.node .node-label { font-family: var(--font); font-size: 12px; font-weight: bold; fill: #000; text-anchor: middle; }
+.node .node-ip { font-family: "Courier New", monospace; font-size: 10px; fill: #333; text-anchor: middle; }
+.node-router { color: var(--router); }
+.node-switch { color: var(--switch); }
+.node-pc { color: var(--pc); }
+
+.node.selected .node-body { stroke: var(--path); stroke-width: 3; stroke-dasharray: 4 2; }
+.node.connect-src .node-body { stroke: var(--title-a); stroke-width: 3; }
+.node.on-path .node-body { stroke: var(--path); stroke-width: 3; }
+.node.reachable .node-body { stroke: var(--reach); stroke-width: 3; }
+.node.dimmed { opacity: .35; }
+.node.dragging { opacity: .9; }
+
+/* ---------- Caixa de dialogo ---------- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(0,0,0,.35);
+  display: flex; align-items: center; justify-content: center;
+}
+.dialog { width: min(340px, 92vw); }
+.dialog-body { padding: 14px 12px 12px; }
+.dialog-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+.dialog-actions .btn { min-width: 84px; }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+  background: #ffffe0; color: #000;
+  border: 2px solid; border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+  box-shadow: inset 1px 1px 0 var(--hi-soft), inset -1px -1px 0 var(--sh), 2px 2px 4px rgba(0,0,0,.4);
+  padding: 8px 16px; z-index: 60; max-width: 90vw;
+}
+.toast.show { display: block; }
+.toast.error { background: #ffe0e0; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 900px) {
+  .workspace { flex-direction: column; }
+  .panel { width: auto; flex: 1 1 auto; }
+  .canvas-inner { min-height: 360px; }
+}

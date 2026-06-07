@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulador de Rede - ISUTC</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Janela principal estilo aplicacao classica -->
+  <div class="window app-window">
+    <div class="titlebar">
+      <span class="titlebar-icon">▦</span>
+      <span class="titlebar-text">Simulador de Rede - AED II / ISUTC</span>
+      <span class="titlebar-status" id="statusRede"><span id="statusTexto">Rede vazia</span></span>
+    </div>
+
+    <!-- Barra de menu / botoes -->
+    <div class="menubar">
+      <div class="tool-group">
+        <span class="tool-label">Adicionar:</span>
+        <button class="btn" data-add="pc">PC</button>
+        <button class="btn" data-add="switch">Switch</button>
+        <button class="btn" data-add="router">Router</button>
+      </div>
+      <span class="sep"></span>
+      <div class="tool-group">
+        <button class="btn" id="btnModoLigacao">Modo Ligacao</button>
+      </div>
+      <span class="sep"></span>
+      <div class="tool-group">
+        <button class="btn" id="btnExemplo">Exemplo</button>
+        <button class="btn" id="btnGuardar">Guardar</button>
+        <button class="btn" id="btnCarregar">Carregar</button>
+        <button class="btn" id="btnLimpar">Limpar</button>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <!-- Area de desenho -->
+      <section class="canvas-wrap">
+        <div class="canvas-titlebar">Topologia</div>
+        <div class="canvas-inner">
+          <div class="canvas-hint" id="canvasHint">
+            <p>A area esta vazia.</p>
+            <p class="muted">Use os botoes Adicionar, ou carregue o Exemplo.</p>
+          </div>
+          <svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <div class="statusbar">
+          <span class="legend"><i class="sw-router"></i> Router</span>
+          <span class="legend"><i class="sw-switch"></i> Switch</span>
+          <span class="legend"><i class="sw-pc"></i> PC</span>
+          <span class="legend-mode" id="legendaModo"></span>
+        </div>
+      </section>
+
+      <!-- Painel lateral -->
+      <aside class="panel">
+        <!-- Configuracao do dispositivo -->
+        <div class="group-box" id="cardConfig" hidden>
+          <div class="group-title">Dispositivo</div>
+          <div class="group-body">
+            <div class="config-row"><span>ID:</span><strong id="cfgId">-</strong></div>
+            <div class="config-row"><span>Tipo:</span><strong id="cfgTipo">-</strong></div>
+            <label class="field">
+              <span>Endereco IP</span>
+              <input type="text" id="cfgIp" placeholder="ex: 192.168.1.10" autocomplete="off" />
+            </label>
+            <div class="config-actions">
+              <button class="btn" id="btnSalvarIp">Guardar IP</button>
+              <button class="btn" id="btnRemoverDisp">Remover</button>
+            </div>
+            <div class="config-links">
+              <span class="links-title">Ligacoes deste dispositivo</span>
+              <div id="cfgLigacoes"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Algoritmos -->
+        <div class="group-box">
+          <div class="group-title">Algoritmos</div>
+          <div class="group-body">
+            <div class="field-pair">
+              <label class="field">
+                <span>Origem</span>
+                <select id="selOrigem"></select>
+              </label>
+              <label class="field">
+                <span>Destino</span>
+                <select id="selDestino"></select>
+              </label>
+            </div>
+            <div class="algo-buttons">
+              <button class="btn algo" data-algo="bfs">BFS (menos saltos)</button>
+              <button class="btn algo" data-algo="dijkstra">Dijkstra (menor custo)</button>
+              <button class="btn algo" data-algo="dfs">DFS (alcancaveis)</button>
+              <button class="btn algo" data-algo="conectividade">Conectividade</button>
+            </div>
+            <div class="resultado" id="resultado">
+              <p class="muted">Os resultados aparecem aqui.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Caixa de dialogo: peso da ligacao -->
+  <div class="modal-overlay" id="modalPeso" hidden>
+    <div class="window dialog">
+      <div class="titlebar">
+        <span class="titlebar-text">Peso da ligacao</span>
+        <button class="titlebar-close" id="modalPesoX">×</button>
+      </div>
+      <div class="dialog-body">
+        <p id="modalPesoTexto" class="muted"></p>
+        <label class="field">
+          <span>Latencia / distancia</span>
+          <input type="number" id="inputPeso" min="0" step="0.1" value="1" />
+        </label>
+        <div class="dialog-actions">
+          <button class="btn" id="modalPesoOk">Ligar</button>
+          <button class="btn" id="modalPesoCancel">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
